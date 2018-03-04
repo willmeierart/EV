@@ -24,10 +24,10 @@ jQuery(document).ready(function () {
     })
     jQuery('.studio-container').hover(function(e) {
       e.preventDefault()
-      jQuery('#cursor').css('background-color', '#ffd076')
+      cursor.css('background-color', '#ffd076')
     }, function() {
       // on mouseout, reset the background colour
-      jQuery('#cursor').css('background-color', '#f36c4f')
+      cursor.css('background-color', '#f36c4f')
     })
     jQuery('.overlay').hover(function(e) {
       e.preventDefault()
@@ -38,9 +38,9 @@ jQuery(document).ready(function () {
     })
     jQuery('#info').hover(function(e) {
       e.preventDefault()
-      jQuery('#cursor').css('background-color', '#28636c')
+      cursor.css('background-color', '#28636c')
     }, function() {
-      jQuery('#cursor').css('background-color', '#f36c4f')
+      cursor.css('background-color', '#f36c4f')
     })
 
     // info slide activity:
@@ -65,90 +65,50 @@ jQuery(document).ready(function () {
     // consolidate all logic of cursor css into one function, called by many different event handlers
     function setHoverState (state, clearQueue) {
       var duration = 150
-      var circleStyles = { 'border-width': 0, width: '40px', height: '40px', 'border-radius': '50px' }
-      var squareStyles = { 'border-width': 0, width: '40px', height: '40px', 'border-radius': 0 }
-      var leftStyles = { 'border-top-width': '40px', 'border-bottom-width': '40px', 'border-left-width': 0, 'border-right-width': '60px', width: 0, height: 0, 'border-radius': 0 }
-      var rightStyles = { 'border-top-width': '40px', 'border-bottom-width': '40px', 'border-left-width': '60px', 'border-right-width': 0, width: 0, height: 0, 'border-radius': 0 }
 
-      function animateCursor (styles) {
-        if (clearQueue) {
-          return cursor.stop(true).clearQueue().animate(styles, duration)
-        } else {
-          return cursor.animate(styles, duration)
+      var classList = ['hoverstate-circle', 'hoverstate-square', 'hoverstate-right', 'hoverstate-left', 'arrow-right', 'arrow-left', 'carousel']
+
+      var states = {
+        circle: {
+          styles: { 'border-width': 0, width: '40px', height: '40px', 'border-radius': '50px' },
+          classes: classList.filter(function(className){
+            return className.indexOf(circle) !== -1
+          })
+        },
+        square: {
+          styles: { 'border-width': 0, width: '40px', height: '40px', 'border-radius': 0 },
+          classes: classList.filter(function(className){
+            return className.indexOf(square) !== -1
+          })
+        },
+        left: {
+          styles: { 'border-top-width': '40px', 'border-bottom-width': '40px', 'border-left-width': 0, 'border-right-width': '60px', width: 0, height: 0, 'border-radius': 0 },
+          classes: classList.filter(function(className){
+            return className.indexOf(left) !== -1 || className === 'carousel'
+          })
+        },
+        right: {
+          styles: { 'border-top-width': '40px', 'border-bottom-width': '40px', 'border-left-width': '60px', 'border-right-width': 0, width: 0, height: 0, 'border-radius': 0 },
+          classes: classList.filter(function(className){
+            return className.indexOf(right) !== -1 || className === 'carousel'
+          })
         }
       }
 
-      switch (state) {
-        case circle :
-          if (!cursor.hasClass('hoverstate-circle')) {
-            console.log(circle)
-            clearQueue
-              ? cursor
-                .stop().clearQueue().animate(circleStyles, duration)
-                .delay(duration)
-                .removeClass('arrow-right arrow-left carousel hoverstate-square hoverstate-right hoverstate-left')
-                .addClass('hoverstate-circle')
-              : cursor
-                .animate(circleStyles, duration)
-                .delay(duration)
-                .removeClass('arrow-right arrow-left carousel hoverstate-square hoverstate-right hoverstate-left')
-                .addClass('hoverstate-circle')
-          }
-          return
-        case square :
-          if (!cursor.hasClass('hoverstate-square')) {
-            console.log(square)            
-            clearQueue
-              ? cursor
-                .stop().clearQueue().animate(squareStyles, duration)
-                .delay(duration)
-                .removeClass('arrow-right arrow-left carousel hoverstate-square hoverstate-right hoverstate-left')
-                .addClass('hoverstate-square')
-              : cursor
-                .animate(circleStyles, duration)
-                .delay(duration)
-                .removeClass('arrow-right arrow-left carousel hoverstate-square hoverstate-right hoverstate-left')
-                .addClass('hoverstate-square')
-          }
-          return
-        case left :
-          if (!cursor.hasClass('hoverstate-left')) {
-            console.log(left)            
-            clearQueue
-              ? cursor
-                .removeClass('arrow-right hoverstate-square hoverstate-right hoverstate-circle')
-                .addClass('arrow-left carousel hoverstate-left')
-                .stop().clearQueue().animate(leftStyles, duration)
-              : cursor
-                .removeClass('arrow-right hoverstate-square hoverstate-right hoverstate-circle')
-                .addClass('arrow-left carousel hoverstate-left')
-                .animate(leftStyles, duration)
-          }
-          return
-        case right :
-          console.log(right)
-          if (!cursor.hasClass('hoverstate-right')) {
-            clearQueue
-              ? cursor
-                .removeClass('arrow-left hoverstate-square hoverstate-left hoverstate-circle')
-                .addClass('arrow-right carousel hoverstate-right')
-                .stop().clearQueue().animate(rightStyles, duration)
-              : cursor
-                .removeClass('arrow-left hoverstate-square hoverstate-left hoverstate-circle')
-                .addClass('arrow-right carousel hoverstate-right')
-                .animate(rightStyles, duration)
-          }
-          return
-        default:
-          if (this.hoverState !== circle) {
-            cursor.animate(circleStyles, duration)
-              .delay(duration)
-              .removeClass('arrow-right arrow-left carousel')
-          }
-          console.log('not valid state: ', state)
-          // keep cursor a circle
-          return
+      function animateCursor (state) {
+        var theseStyles = states[state].styles
+        var theseClasses = states[state].classes.join(' ')
+        var filterClass = states[state].classes[0]
+        if (!cursor.hasClass(filterClass)) {
+          console.log(filterClass);
+          var animation = clearQueue
+            ? cursor.stop(true).clearQueue().animate(theseStyles, duration).delay(duration).removeClass().addClass(theseClasses)
+            : cursor.animate(theseStyles, duration).delay(duration).removeClass().addClass(theseClasses)
+          return animation
+        }
+        return
       }
+      animateCursor(state)
     }
 
     // cursor funstuff:
@@ -203,9 +163,9 @@ jQuery(document).ready(function () {
       }, 5)
       if (cursor.hasClass('carousel')) {
         if (jQuery(thisCarousel).hasClass('cursor-right')) {
-          setHoverState(right)
+          setHoverState(right, true)
         } else if (jQuery(thisCarousel).hasClass('cursor-left')) {
-          setHoverState(left)
+          setHoverState(left, true)
         }
       }
     })
@@ -215,15 +175,9 @@ jQuery(document).ready(function () {
     jQuery('*').hover(function(e) {
       if (jQuery(e.target).parents('.lay-carousel-slide').length > 0) {
         if (jQuery(e.target).isHover()) {
-          // e.stopPropagation()
-          // e.preventDefault()
-          // e.preventDefault()
-          // e.stopPropagation()
           cursor.addClass('carousel')
         } else {
-          // e.preventDefault()
-          // e.stopPropagation()
-          setHoverState(circle)
+          setHoverState(circle, true)
         }
       }
     })
@@ -257,3 +211,82 @@ jQuery(document).ready(function () {
     init()
   })
 })
+
+// just in case ... :
+
+      // switch (state) {
+      //   case circle :
+      //     if (!cursor.hasClass('hoverstate-circle')) {
+      //       console.log(circle)
+      //       clearQueue
+      //         ? cursor
+      //           .stop().clearQueue().animate(circleStyles, duration)
+      //           .delay(duration)
+      //           .removeClass('arrow-right arrow-left carousel hoverstate-square hoverstate-right hoverstate-left')
+      //           .addClass('hoverstate-circle')
+      //         : cursor
+      //           .animate(circleStyles, duration)
+      //           .delay(duration)
+      //           .removeClass('arrow-right arrow-left carousel hoverstate-square hoverstate-right hoverstate-left')
+      //           .addClass('hoverstate-circle')
+      //     }
+      //     return
+      //   case square :
+      //     if (!cursor.hasClass('hoverstate-square')) {
+      //       console.log(square)            
+      //       clearQueue
+      //         ? cursor
+      //           .stop().clearQueue().animate(squareStyles, duration)
+      //           .delay(duration)
+      //           .removeClass('arrow-right arrow-left carousel hoverstate-circle hoverstate-right hoverstate-left')
+      //           .addClass('hoverstate-square')
+      //         : cursor
+      //           .animate(circleStyles, duration)
+      //           .delay(duration)
+      //           .removeClass('arrow-right arrow-left carousel hoverstate-circle hoverstate-right hoverstate-left')
+      //           .addClass('hoverstate-square')
+      //     }
+      //     return
+      //   case left :
+      //     if (!cursor.hasClass('hoverstate-left')) {
+      //       console.log(left)            
+      //       clearQueue
+      //         ? cursor
+      //           .stop().clearQueue().animate(leftStyles, duration)
+      //           .delay(duration)
+      //           .removeClass('arrow-right hoverstate-square hoverstate-right hoverstate-circle')
+      //           .addClass('arrow-left carousel hoverstate-left')
+      //         : cursor
+      //           .animate(leftStyles, duration)
+      //           .delay(duration)
+      //           .removeClass('arrow-right hoverstate-square hoverstate-right hoverstate-circle')
+      //           .addClass('arrow-left carousel hoverstate-left')
+      //     }
+      //     return
+      //   case right :
+      //     console.log(right)
+      //     if (!cursor.hasClass('hoverstate-right')) {
+      //       clearQueue
+      //         ? cursor
+      //           .stop().clearQueue().animate(rightStyles, duration)
+      //           .delay(duration)
+      //           .removeClass('arrow-left hoverstate-square hoverstate-left hoverstate-circle')
+      //           .addClass('arrow-right carousel hoverstate-right')
+      //         : cursor
+      //           .animate(rightStyles, duration)
+      //           .delay(duration)
+      //           .removeClass('arrow-left hoverstate-square hoverstate-left hoverstate-circle')
+      //           .addClass('arrow-right carousel hoverstate-right')
+      //     }
+      //     return
+      //   default:
+      //     if (this.hoverState !== circle) {
+      //       cursor
+      //         .animate(circleStyles, duration)
+      //         .delay(duration)
+      //         .removeClass('arrow-right arrow-left carousel')
+      //     }
+      //     console.log('not valid state: ', state)
+      //     // keep cursor a circle
+      //     return
+      // }
