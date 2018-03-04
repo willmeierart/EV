@@ -17,6 +17,32 @@ jQuery(document).ready(function () {
     var left = 'left'
     var hoverState = circle
 
+    // Julia's code:
+    jQuery('.studio-container').click(function(e) {
+      e.preventDefault()
+      jQuery('#landing').css({ transform: 'translateX(100%)' }, 2000)
+    })
+    jQuery('.studio-container').hover(function(e) {
+      e.preventDefault()
+      jQuery('#cursor').css('background-color', '#ffd076')
+    }, function() {
+      // on mouseout, reset the background colour
+      jQuery('#cursor').css('background-color', '#f36c4f')
+    })
+    jQuery('.overlay').hover(function(e) {
+      e.preventDefault()
+      jQuery('html').css('overflow-y', 'hidden')
+    }, function() {
+      // on mouseout, reset the background colour
+      jQuery('html').css('overflow-y', 'scroll')
+    })
+    jQuery('#info').hover(function(e) {
+      e.preventDefault()
+      jQuery('#cursor').css('background-color', '#28636c')
+    }, function() {
+      jQuery('#cursor').css('background-color', '#f36c4f')
+    })
+
     // info slide activity:
     jQuery("#menu-item-445 span").click(function(e) {
       e.preventDefault()
@@ -31,10 +57,8 @@ jQuery(document).ready(function () {
 
     //add cursor element
     jQuery("body").prepend(jQuery("<div id='cursor'></div>"))
-    var mobileDisplayProp = _isMobile ? 'none' : 'block'
-    console.log(_isMobile ? 'none!important' : 'block')
     var cursor = jQuery("#cursor").css({
-      display: mobileDisplayProp,
+      display: 'block',
       position:'absolute'
     })
 
@@ -57,6 +81,7 @@ jQuery(document).ready(function () {
       switch (state) {
         case circle :
           if (!cursor.hasClass('hoverstate-circle')) {
+            console.log(circle)
             clearQueue
               ? cursor
                 .stop().clearQueue().animate(circleStyles, duration)
@@ -72,6 +97,7 @@ jQuery(document).ready(function () {
           return
         case square :
           if (!cursor.hasClass('hoverstate-square')) {
+            console.log(square)            
             clearQueue
               ? cursor
                 .stop().clearQueue().animate(squareStyles, duration)
@@ -87,6 +113,7 @@ jQuery(document).ready(function () {
           return
         case left :
           if (!cursor.hasClass('hoverstate-left')) {
+            console.log(left)            
             clearQueue
               ? cursor
                 .removeClass('arrow-right hoverstate-square hoverstate-right hoverstate-circle')
@@ -99,6 +126,7 @@ jQuery(document).ready(function () {
           }
           return
         case right :
+          console.log(right)
           if (!cursor.hasClass('hoverstate-right')) {
             clearQueue
               ? cursor
