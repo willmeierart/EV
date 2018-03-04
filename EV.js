@@ -20,7 +20,9 @@ jQuery(document).ready(function ($) {
     var hoverState = circle
 
     //add cursor element
-    $("body").prepend($("<div id='cursor'></div>"))
+    if ($('body').children('#cursor').length === 0){
+      $("body").prepend($("<div id='cursor'></div>"))
+    }
     var cursor = $("#cursor").css({ display: 'block', position:'absolute'})
 
     // POWERHOUSE FUNCTION:
@@ -224,7 +226,6 @@ jQuery(document).ready(function ($) {
     })
   }
 
-  window.laytheme.on('newpage', function() {
-    init()
-  })
+  window.laytheme.on('newpage', function() { init() })
+  window.laytheme.on('newpageshown', function() { init() })
 })
