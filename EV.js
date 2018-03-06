@@ -23,7 +23,10 @@ jQuery(document).ready(function ($) {
     if ($('body').children('#cursor').length === 0){
       $("body").prepend($("<div id='cursor'></div>"))
     }
-    var cursor = $("#cursor").css({ display: 'block', position:'absolute'})
+    var cursor = $("#cursor").css({
+      display: _isMobile ? 'none' : 'block',
+      position:'absolute'
+    })
 
     // POWERHOUSE FUNCTION:
     // consolidates all logic of cursor css into one function, called by many different event handlers
